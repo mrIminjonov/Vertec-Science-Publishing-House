@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Vertex Science Publishing House</h1>
+    </header>
+    <nav>
+        <a href="#" onclick="showHome()" class="home-link">Home</a>
+
+        <div class="dropdown">
+            <a href="../browse-by-subject2.html">Journals</a>
+        </div>
+        <a href="#">Proceedings</a>
+        
+        <a href="#" class="submit-link">Submit an Article</a>
+    </nav>
+    <div class="hero">
+        <h2>Search articles, journals, editors and more</h2>
+    </div>
+    <div class="content">
+        <h2>Propose a Special Issue and Become the Lead Guest Editor</h2>
+        <div class="box-container">
+            <div class="box" onclick="window.location.href='for-authors.html'">
+                <h3>For Authors</h3>
+                <p>Publishing with us to make your research visible to the widest possible audience.</p>
+            </div>
+            <div class="box" onclick="window.location.href='for-editors.html'">
+                <h3>For Editors</h3>
+                <p>Serving as an editorial member for a scholarly journal is a key step in the career progression.</p>
+            </div>
+            <div class="box" onclick="window.location.href='for-reviewers.html'">
+                <h3>For Reviewers</h3>
+                <p>Engaging as a reviewer allows you to contribute significantly to the academic community.</p>
+            </div>
+            <div class="box" onclick="window.location.href='for-conference-organizers.html'">
+                <h3>For Conference Organizers</h3>
+                <p>Find out everything you need to know about organizing a successful event.</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="header">
+            <h2>Recommended Journals</h2>
+            <a href="browse-by-subject2.html" class="view-all">View All Journals →</a>
+        </div>
+
+        <div class="main">
+            <div class="sidebar">
+                <ul>
+                    <li data-category="life-sciences">Life Sciences, Agriculture & Food</li>
+                    <li data-category="chemistry">Chemistry</li>
+                    <li data-category="medicine">Medicine & Health</li>
+                    <li data-category="materials">Materials Science</li>
+                    <li data-category="math">Mathematics & Physics</li>
+                    <li data-category="electrical">Electrical & Computer Science</li>
+                    <li data-category="energy">Earth, Energy & Environment</li>
+                    <li data-category="civil">Architecture & Civil Engineering</li>
+                    <li data-category="education">Education</li>
+                    <li data-category="economics">Economics & Management</li>
+                    <li data-category="humanities">Humanities & Social Sciences</li>
+                    <li data-category="multi">Multidisciplinary</li>
+                </ul>
+            </div>
+
+            <div class="journals" id="journal-list">
+                <!-- JavaScript orqali jurnallar yuklanadi -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Sayt yuklanganda journals.json faylini yuklash
+        let journalsData = [];
+    
+        fetch('/journals.json')
+            .then(response => response.json())
+            .then(data => {
+                journalsData = data; // JSON ma’lumotlarini saqlab qolamiz
+            })
+            .catch(error => {
+                console.error('Error fetching journals:', error);
+            });
+    
+        // Kategoriya bo‘yicha jurnallarni yuklash
+        document.querySelectorAll('[data-category]').forEach(item => {
+            item.addEventListener('click', event => {
+                const category = event.target.getAttribute('data-category');
+    
+                // Kategoriya nomini JSON formatiga mos keladigan holatga keltirish
+                const subjectMap = {
+                    "life-sciences": "Life Sciences, Agriculture & Food",
+                    "chemistry": "Chemistry",
+                    "medicine": "Medicine & Health",
+                    "materials": "Materials Science",
+                    "math": "Mathematics & Physics",
+                    "electrical": "Electrical & Computer Science",
+                    "energy": "Earth, Energy & Environment",
+                    "civil": "Architecture & Civil Engineering",
+                    "education": "Education",
+                    "economics": "Economics & Management",
+                    "humanities": "Humanities & Social Sciences",
+                    "multi": "Multidisciplinary"
+                };
+    
+                const selectedSubject = subjectMap[category];
+    
+                if (!selectedSubject) {
+                    console.error('Invalid category selected');
+                    return;
+                }
+    
+                // Filtrlash
+                const filteredJournals = journalsData.filter(journal => journal.subject === selectedSubject);
+    
+                // Jurnallarni ekranga chiqarish
+                const journalList = document.getElementById('journal-list');
+                journalList.innerHTML = '';
+    
+                if (filteredJournals.length === 0) {
+                    journalList.innerHTML = '<p>No journals found for this category.</p>';
+                    return;
+                }
+    
+                filteredJournals.forEach(journal => {
+                    const journalItem = document.createElement('div');
+                    journalItem.className = 'journal-item';
+                    journalItem.innerHTML = `
+                        <h3>${journal.title}</h3>
+                        <p><strong>Category:</strong> ${journal.subject}</p>
+                        <p><strong>Publisher:</strong> ${journal.publisher}</p>
+                        <p><strong>Impact Factor:</strong> ${journal.impact_factor}</p>
+                        <a href="#">📄 Submit an Article</a>
+                    `;
+                    journalList.appendChild(journalItem);
+                });
+            });
+        });
+    </script>
+    
+    <footer>
+        <p>Join as Editorial Board Member or Become a Reviewer</p>
+    </footer>
+
+    <script>
+        function showLoginForm() {
+            alert('Login form will be displayed here.');
+        }
+
+        function showRegisterForm() {
+            alert('Register form will be displayed here.');
+        }
+
+        function showHome() {
+            alert('Home content will be displayed here.');
+        }
+    </script>
+
+</body>
+</html>

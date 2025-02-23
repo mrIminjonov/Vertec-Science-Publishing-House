@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Publish Journal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f4f4f4; }
+        .container { background: #fff; padding: 20px; max-width: 600px; margin: auto; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="file"] { margin-top: 5px; }
+        button { padding: 10px 20px; background: #3498db; border: none; color: #fff; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Publish Journal</h1>
+        <form id="publishForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="journalName">Journal Name</label>
+                <input type="text" id="journalName" name="journalName" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="issn">ISSN</label>
+                <input type="text" id="issn" name="issn" required>
+            </div>
+            <div class="form-group">
+                <label for="imageUpload">Upload Image</label>
+                <input type="file" id="imageUpload" name="imageFile" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label for="fileUpload">Upload File</label>
+                <input type="file" id="fileUpload" name="fileFile" accept=".pdf,.doc,.docx" required>
+            </div>
+            <button type="submit">Publish</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('publishForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/uploadAdminJournal', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server responded with ' + response.status);
+                }
+                return response.json();
+            })
+            .then(result => {
+                if (result.success) {
+                    alert('Journal published successfully!');
+                    document.getElementById('publishForm').reset();
+                } else {
+                    alert('Error publishing journal: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error processing files.');
+            });
+        });
+    </script>
+</body>
+</html>
