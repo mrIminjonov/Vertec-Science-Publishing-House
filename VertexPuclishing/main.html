@@ -376,7 +376,7 @@
         <a href="#" onclick="showHome()" class="home-link">Home</a>
 
         <div class="dropdown">
-            <a href="browse-by-subject.html">Journals<span class="arrow"></span></a>
+            <a href="browse-by-subject.html">Journals</a>
         </div>
         <a href="#">Proceedings</a>
         <a href="login/login.html" class="submit-link">Submit an Article</a>
@@ -388,19 +388,19 @@
     <div class="content">
         <h2></h2>
         <div class="box-container">
-            <div class="box" onclick="window.location.href='for-authors.html'">
+            <div class="box" onclick="window.location.href='informations/for_authors.html'">
                 <h3>For Authors</h3>
                 <p>Publishing with us to make your research visible to the widest possible audience.</p>
             </div>
-            <div class="box" onclick="window.location.href='for-editors.html'">
+            <div class="box" onclick="window.location.href='informations/for_editors.html'">
                 <h3>For Editors</h3>
                 <p>Serving as an editorial member for a scholarly journal is a key step in the career progression.</p>
             </div>
-            <div class="box" onclick="window.location.href='for-reviewers.html'">
+            <div class="box" onclick="window.location.href='informations/for_reviewers.html'">
                 <h3>For Reviewers</h3>
                 <p>Engaging as a reviewer allows you to contribute significantly to the academic community.</p>
             </div>
-            <div class="box" onclick="window.location.href='for-conference-organizers.html'">
+            <div class="box" onclick="window.location.href='informations/for_conference_organizers.html'">
                 <h3>For Conference Organizers</h3>
                 <p>Find out everything you need to know about organizing a successful event.</p>
             </div>
@@ -409,7 +409,7 @@
     <div class="container">
         <!-- Removed static header ("Recommended Journals", "View All Journals →", "No published journals available.") -->
         <!-- New container for rotating admin journals -->
-        <div id="rotating-journals" style="text-align: center; padding: 20px;">
+        <div id="rotating-journals" style="text-align: center; padding: 20px; display: flex; flex-wrap: wrap; justify-content: center;">
             <!-- Rotating journal image and title will be displayed here -->
         </div>
     </div>
@@ -463,6 +463,9 @@
     <script>
         function rotateAdminJournals() {
             const container = document.getElementById('rotating-journals');
+            container.style.display = 'flex';
+            container.style.flexWrap = 'wrap';
+            container.style.justifyContent = 'center';
             fetch('/journals/adminadd.json')
                 .then(response => response.json())
                 .then(journals => {
@@ -470,19 +473,15 @@
                         container.innerHTML = '<p>No published journals available.</p>';
                         return;
                     }
-                    let index = 0;
-                    function showJournal() {
-                        const journal = journals[index];
-                        container.innerHTML = `
-                            <div class="journal" style="display: inline-block; margin: 10px; text-align: center;">
-                                ${ journal.imageData ? `<img src="${journal.imageData}" alt="${journal.journalName}" style="max-width:200px; display:block; margin:0 auto;">` : '' }
-                                <h3>${journal.journalName}</h3>
-                            </div>
-                        `;
-                        index = (index + 1) % journals.length;
-                    }
-                    showJournal();
-                    setInterval(showJournal, 5000);
+                    container.innerHTML = journals.map(journal => `
+                        <div class="journal" style="width: 150px; margin: 10px; text-align: center; background: #f9f9f9; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                            ${journal.imagePath ? `<img src="${journal.imagePath}" alt="${journal.journalName}" style="width:80px; height:80px; object-fit:cover; display:block; margin:0 auto; border-radius: 5px;">` : ''}
+                            <h3>${journal.journalName}</h3>
+                            <p>ISSN: ${journal.issn}</p>
+                            <p>${journal.description}</p>
+                            <button onclick="window.location.href='login/login.html'">Download</button>
+                        </div>
+                    `).join('');
                 })
                 .catch(error => {
                     console.error('Error loading journals:', error);

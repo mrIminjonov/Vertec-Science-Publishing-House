@@ -26,7 +26,8 @@ header {
     }
 
 nav {
-    background-color: #444;
+    background-color: #3579c8;
+    box-shadow: #007acc;
     padding: 10px;
     text-align: center;
 }
@@ -205,9 +206,9 @@ footer {
     }
 
 .container {
-    max-width: 1200px;
+    max-width: 100%;
     margin: auto;
-    background: #20232a;
+    box-shadow: 0 0 10px rgba(72, 78, 97, 0.698);
     padding: 20px;
     border-radius: 8px;
     display: flex;
